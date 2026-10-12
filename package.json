@@ -1,0 +1,15 @@
+{
+  "name": "linkguard",
+  "version": "1.0.0",
+  "description": "Extensión anti-phishing para Chrome y Firefox: aviso antes de abrir enlaces desde el correo web.",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test tests/analyzer.test.js tests/adapters.test.js",
+    "psl": "node tools/gen-psl.mjs"
+  },
+  "optionalDependencies": {
+    "tldts": "^7.0.0"
+  }
+}

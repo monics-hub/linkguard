@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LinkGuard</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header><img src="../../icons/icon-32.png" alt="" width="24" height="24"><b>LinkGuard</b>
+    <label class="switch" title="Activar o desactivar"><input type="checkbox" id="enabled"><span></span></label>
+  </header>
+  <p id="status" class="status">Comprobando esta pestaña…</p>
+  <p id="host" class="host"></p>
+  <div class="actions">
+    <button id="watch" class="btn" hidden>Vigilar este sitio</button>
+    <button id="options" class="btn primary">Configuración</button>
+  </div>
+  <script src="../../platform/platform.js"></script>
+  <script src="../data/defaults.js"></script>
+  <script src="../core/domain.js"></script>
+  <script src="../core/settings.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

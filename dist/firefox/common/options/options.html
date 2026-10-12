@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LinkGuard · Configuración</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <header class="top">
+    <img src="../../icons/icon-48.png" alt="" width="40" height="40">
+    <div>
+      <h1>LinkGuard</h1>
+      <p>Aviso antes de abrir enlaces desde tu correo</p>
+    </div>
+    <label class="switch big" title="Activar o desactivar la protección">
+      <input type="checkbox" id="enabled"><span></span><b id="enabledLabel">Activada</b>
+    </label>
+  </header>
+
+  <main>
+    <section id="perm" class="card warn" hidden>
+      <h2>Falta un permiso</h2>
+      <p>Tu navegador no ha concedido a LinkGuard acceso a los sitios web, así que no puede vigilar tu correo. Pulsa el botón y acepta.</p>
+      <button id="grant" class="btn primary">Conceder acceso a los sitios</button>
+    </section>
+
+    <section class="card">
+      <h2>¿Dónde actúa?</h2>
+      <p class="hint">Para evitar la fatiga de avisos, LinkGuard solo actúa en tu <b>lista de vigilancia</b> (tu correo web) y en las pestañas que abras desde ahí. Navegar por Google, YouTube, etc. no muestra avisos.</p>
+      <label class="field">
+        <span>Lista de vigilancia <small>(un sitio por línea; incluye sus subdominios)</small></span>
+        <textarea id="watchlist" rows="5" spellcheck="false"></textarea>
+      </label>
+      <label class="check">
+        <input type="checkbox" id="followFromWatched">
+        <span><b>Vigilar también las páginas abiertas desde el correo.</b> Se detectan por la pestaña de origen y, como respaldo, por la cabecera Referer. Dentro de esa web, los enlaces al mismo sitio no avisan.</span>
+      </label>
+      <details>
+        <summary>Hosts internos del portal (nunca avisan)</summary>
+        <label class="field">
+          <span>Páginas propias de la interfaz de Gmail/Outlook (cuenta, ayuda, cierre de sesión)</span>
+          <textarea id="internalHosts" rows="5" spellcheck="false"></textarea>
+        </label>
+      </details>
+    </section>
+
+    <section class="card">
+      <h2>Lista blanca <small id="wlCount"></small></h2>
+      <p class="hint">Dominios en los que confías: no se mostrará aviso para ellos ni para sus subdominios. También se añaden con el botón «Confiar en este dominio» de la ventana de aviso. Además sirven de referencia: un dominio que <b>imite</b> a uno de ellos dará alerta roja.</p>
+      <form id="wlForm" class="inline">
+        <input id="wlInput" placeholder="ejemplo.com" autocomplete="off" spellcheck="false">
+        <button class="btn">Añadir</button>
+      </form>
+      <ul id="wlList" class="chips"></ul>
+    </section>
+
+    <section class="card">
+      <h2>Dominios propios a proteger</h2>
+      <p class="hint">Tu banco, tu empresa, tu universidad… Si un enlace se parece a ellos sin serlo (p. ej. <code>mibanco-seguro.com</code> frente a <code>mibanco.com.mx</code>), verás una alerta roja de peligro.</p>
+      <label class="field"><span>Un dominio por línea</span><textarea id="protectedDomains" rows="3" spellcheck="false"></textarea></label>
+    </section>
+
+    <section class="card">
+      <h2>Intensidad del aviso</h2>
+      <fieldset class="radios">
+        <legend>Enlaces a dominios oficiales conocidos (paypal.com, google.com, bbva.mx…)</legend>
+        <label><input type="radio" name="knownMode" value="discreet"> <span><b>Aviso discreto</b> — ventana pequeña en verde</span></label>
+        <label><input type="radio" name="knownMode" value="full"> <span><b>Aviso completo</b> — igual que cualquier otro enlace</span></label>
+        <label><input type="radio" name="knownMode" value="skip"> <span><b>Sin aviso</b> — abrir directamente si no hay ninguna alerta</span></label>
+      </fieldset>
+      <label class="field narrow">
+        <span>Segundos que el botón SÍ queda bloqueado en avisos de PELIGRO</span>
+        <input type="number" id="dangerDelaySeconds" min="0" max="10" step="1">
+      </label>
+    </section>
+
+    <section class="card">
+      <h2>urlscan.io <small>(opcional)</small></h2>
+      <p class="hint">Permite analizar un enlace sospechoso en un navegador aislado de <a href="https://urlscan.io" target="_blank" rel="noopener">urlscan.io</a> y ver a dónde lleva de verdad (útil con acortadores como bit.ly). Crea una cuenta gratuita y copia tu API key desde <a href="https://urlscan.io/user/profile/" target="_blank" rel="noopener">tu perfil</a>.</p>
+      <div class="callout">⚠ <b>Privacidad:</b> al analizar, la URL sale de tu equipo y urlscan.io visita la página. Según la visibilidad elegida, la URL puede quedar <b>pública</b>. Las URLs de phishing a menudo incluyen tu correo o un identificador personal: deja marcada la opción de quitar parámetros.</div>
+      <label class="field">
+        <span>API key</span>
+        <div class="inline">
+          <input type="password" id="urlscanApiKey" autocomplete="off" spellcheck="false" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+          <button type="button" class="btn" id="showKey">Mostrar</button>
+          <button type="button" class="btn" id="testKey">Probar</button>
+        </div>
+        <output id="keyResult" class="small"></output>
+      </label>
+      <label class="field">
+        <span>Visibilidad de los escaneos</span>
+        <select id="urlscanVisibility">
+          <option value="unlisted">No listado — oculto en búsquedas públicas; visible para investigadores verificados (recomendado)</option>
+          <option value="private">Privado — solo tú (requiere cuota privada en tu plan)</option>
+          <option value="public">Público — cualquiera puede ver la URL</option>
+        </select>
+      </label>
+      <label class="check"><input type="checkbox" id="urlscanStripQuery"><span>Quitar por defecto los parámetros de la URL (<code>?…</code>) antes de enviarla.</span></label>
+      <div id="consentBox" class="callout" hidden>
+        Firefox requiere tu consentimiento para que la extensión envíe URLs a un servicio externo.
+        <button type="button" class="btn small" id="consentBtn">Dar consentimiento</button>
+        <output id="consentState" class="small"></output>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Probar un enlace</h2>
+      <p class="hint">Comprueba qué detectaría LinkGuard sin hacer clic en nada.</p>
+      <label class="field"><span>URL de destino</span><input id="tryUrl" value="https://www.paypal.com.verificacion-cuenta.xyz/login?email=tu@correo.com" spellcheck="false"></label>
+      <label class="field"><span>Texto visible del enlace (opcional)</span><input id="tryText" value="www.paypal.com" spellcheck="false"></label>
+      <div class="inline">
+        <button type="button" class="btn primary" id="tryShow">Ver la ventana de aviso</button>
+      </div>
+      <div class="examples">Ejemplos:
+        <button type="button" class="linkish" data-url="https://аpple.com/id" data-text="">homógrafo cirílico</button>
+        <button type="button" class="linkish" data-url="https://cuentas-seguras.top/login" data-text="www.bbva.mx">texto engañoso</button>
+        <button type="button" class="linkish" data-url="https://bit.ly/3xYz12" data-text="Ver factura">acortador</button>
+        <button type="button" class="linkish" data-url="http://185.199.110.42/verify" data-text="">IP</button>
+        <button type="button" class="linkish" data-url="https://www.amazon.es/gp/your-account" data-text="">sitio oficial</button>
+        <button type="button" class="linkish" data-url="https://www.wikipedia.org/" data-text="">sitio desconocido</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot"><span id="about"></span><output id="saved" class="saved" aria-live="polite"></output></footer>
+
+  <script src="../../platform/platform.js"></script>
+  <script src="../data/build-info.js"></script>
+  <!--TLDTS-->
+  <script src="../data/defaults.js"></script>
+  <script src="../data/psl-data.js"></script>
+  <script src="../core/punycode.js"></script>
+  <script src="../core/domain.js"></script>
+  <script src="../core/lookalike.js"></script>
+  <script src="../core/analyzer.js"></script>
+  <script src="../core/settings.js"></script>
+  <script src="../ui/modal-styles.js"></script>
+  <script src="../ui/modal.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>
